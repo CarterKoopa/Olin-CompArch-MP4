@@ -1,0 +1,10 @@
+# Ignore compiled SystemVerilog files
+*.json
+*.asc
+*.bin
+
+# Ignore macOS Finder metadata files
+.DS_Store
+
+# Exclude .vcd simulation results given their large filesize
+*.vcd
