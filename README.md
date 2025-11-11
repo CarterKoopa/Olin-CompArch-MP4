@@ -10,6 +10,7 @@ Instruction pointer and tells processor where it is and what to do next.
 Holds current PC, updates when enabled
 Inputs:
 - Increment now flag variable
+
 Output:
 - Memory address of next instruction 
 
@@ -20,6 +21,7 @@ logic [31:0] ir;
 #### Instruction Decoder
 Inputs:
 - 32-bit instruction (from Instruction Register)
+
 Outputs:
 - opcode[6:0]
 - rs1[4:0] (source register 1 address)
@@ -28,12 +30,14 @@ Outputs:
 - funct3[2:0]
 - funct7[6:0]
 - instruction_type (signal indicating R/I/S/B/U/J type)
+
 Other logic:
 - Pure combinational parsing - no decision making
 - Does NOT determine routing (that's the controller's job)
 
 #### Register File
 32 registers, 2 read ports, 1 write port
+
 Inputs:
 - clk
 - rs1_addr[4:0] comes from instruction[19:15] (from instruction memory)
@@ -41,9 +45,11 @@ Inputs:
 - rd_addr[4:0] comes from instruction[11:7] (from instruction memory)
 - rd_data[31:0] comes from writeback mux (could be ALU result, memory data, or PC+4)
 - reg_write_enable (control signal)
+
 Output:
 - rs1_data[31:0] (value from register rs1) goes to ALU
 - rs2_data[31:0] (value from register rs2) goes to ALU or data memory input
+
 Other logic:
 - Register addresses come directly from instruction bits
 - Register data values flow through ALU and datapath
@@ -57,10 +63,12 @@ Extracts/extends immediate values based on instruction type
 #### ALU
 Arithmetic/logic operations
 Could including address calculation for branches
+
 Inputs:
 - Literal function codes
 - Literal arithmetic inputs
 - Flag to/from ALU
+
 Outputs:
 - Literal arithmetic outputs
 
@@ -82,7 +90,9 @@ later stages could use them.
 
 #### Controller
 Generates all control signals based on current state and instruction type
+
 Input: Instruction type (opcode, maybe funct3/funct7)
+
 Outputs: Control signals for EVERY stage of the multi-cycle execution
 - PC_write_enable (when to update PC)
 - IR_write (when to latch instruction register)
@@ -97,6 +107,7 @@ Internal state: FSM states (FETCH, DECODE, EXECUTE, MEMORY, WRITEBACK)
 
 #### Memory Module
 Already provided in memory.sv - implements both instruction and data memory.
+
 Inputs (from your processor):
 - clk
 - imem_address[31:0] (instruction fetch address - connected to PC)
