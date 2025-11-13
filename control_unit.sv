@@ -151,9 +151,9 @@ module control_unit (
                     alu_src_b = 2'b10;  // reg_imm (offset)
                 end
                 else if (is_lui) begin
-                    // LUI: Just pass through immediate (no ALU needed)
-                    alu_src_a = 2'b00;
-                    alu_src_b = 2'b00;
+                    // LUI: update me
+                    alu_src_a = 2'b10; // immediate
+                    alu_src_b = 2'b00; // not used
                 end
                 else if (is_auipc) begin
                     // AUIPC: PC + immediate
