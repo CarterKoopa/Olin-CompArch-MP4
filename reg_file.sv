@@ -19,8 +19,8 @@ module register_file #(
         end
     end
 
-    assign rs1_data = (rs1_addr != 5'd0) ? reg[rs1_addr] : 5'd0;
-    assign rs2_data = (rs2_addr != 5'd0) ? reg[rs2_addr] : 5'd0;
+    assign rs1_data = (rs1_addr != 5'd0) ? regs[rs1_addr] : 5'd0;
+    assign rs2_data = (rs2_addr != 5'd0) ? regs[rs2_addr] : 5'd0;
 
 
 endmodule
