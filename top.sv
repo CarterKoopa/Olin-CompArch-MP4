@@ -47,7 +47,7 @@ module top (
 
     // Control signals
     logic pc_src, pc_write, ir_write, reg_write, dmem_wren;
-    logic [1:0] alu_src_a, alu_src_b, writeback_mux;
+    logic [1:0] alu_src_a, alu_src_b, writeback_src;
 
 
     // *Wire Assignments (Connections)*
@@ -147,7 +147,7 @@ module top (
         .dmem_wren          (dmem_wren),
         .alu_src_a          (alu_src_a),
         .alu_src_b          (alu_src_b),
-        .writeback_mux      (writeback_mux),
+        .writeback_src      (writeback_src),
         .pc_src             (pc_src)
         // might be forgetting something
     );
@@ -194,7 +194,7 @@ module top (
 
     // Writeback Mux - selects data to write back to register file
     always_comb begin
-        case (writeback_mux)
+        case (writeback_src)
             2'b00: rd_data = alu_out_reg;     // For ALU operations (add, sub, and, or, etc.)
             2'b01: rd_data = mem_data_reg;    // For load instructions (lw, lh, lb)
             2'b10: rd_data = reg_imm;         // For lui (load upper immediate)
@@ -202,13 +202,12 @@ module top (
         endcase
     end
 
-    // Program Counter Mux (for later development)
-
-
-
-    assign LED = ~led;
-    assign RGB_R = ~red;
-    assign RGB_G = ~green;
-    assign RGB_B = ~blue;
-
+    // Program Counter Mux
+    always_comb begin
+        case (pc_src)
+            2'b00: next_pc = next_pc;     // For PC+4 calculation
+            2'b01: next_pc = dmem_address;    // For jump or branch calculation
+            default: next_pc = 32'd0;
+        endcase
+    end
 endmodule

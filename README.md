@@ -9,10 +9,21 @@ Each module is listed below:
 Instruction pointer and tells processor where it is and what to do next. 
 Holds current PC, updates when enabled
 Inputs:
-- Increment now flag variable
+- pc_mux_out (Increment now flag variable)
 
 Output:
-- Memory address of next instruction 
+- next_pc (Memory address of next instruction) 
+
+#### Program Counter Mux
+This interfaces with the Program Counter Mux that is in charge of delegating if the PC should go down to the next instruction set or if it should utilize a branch or jump step. 
+
+Program Counter Mux
+Inputs: 
+- next_pc
+-dmem_address (for jump or branch what specific address label to go to)
+
+Output:
+-pc_mux_out (Either next_pc or dmem_address)
 
 #### Instruction Register
 -Stores 32-bit registers that could be in top.sv
@@ -68,9 +79,10 @@ Inputs:
 - Literal function codes
 - Literal arithmetic inputs
 - Flag to/from ALU
+(alu_input_a, alu_input_b, funct3, funct7)
 
 Outputs:
-- Literal arithmetic outputs
+- alu_result Literal arithmetic outputs
 
 #### Data Registers
 Store intermediate results during multi-cycle instruction execution. Since 
@@ -87,6 +99,21 @@ Example: For a load instruction (lw), we:
 
 Without these registers, results from earlier stages would be lost before 
 later stages could use them.
+
+#### Writeback Mux
+The writeback MUX selects 
+the appropriate value (alu_out, mem_data_reg, or PC+4) and reg_write_enable = 1 to 
+write the selected value into rd_data of the register file at register rd_addr.
+
+Writeback MUX (rd_sel)
+Selects what data gets written to rd_data input of register file:
+Inputs (controlled by 2-bit rd_sel signal):
+- 00: alu_out (for ALU operations like add, sub, and, or)
+- 01: mem_data_reg (for load instructions like lw, lh, lb)
+- 10: reg_imm (for immediate instructions like lui)
+- 11: PC+4 (for jump-and-link instructions like jal, jalr)
+
+Output: Goes to rd_data[31:0] input of register file
 
 #### Controller
 Generates all control signals based on current state and instruction type
@@ -135,6 +162,11 @@ How it connects:
 - Register file → dmem_data_in (for stores)
 - dmem_data_out → mem_data_reg → Register file (for loads)
 
+#### pc+4 adder alu
+Each instruction is 4 bytes in Risk-V, so for the CPU to know where the next instruction is, the PC needs to sequence by 4 bytes.
+Input: current_pc[31:0] 
+Output: next_pc[31:0]
+
 #### Top level module
 State Registers (for multi-cycle)
 - pc, ir, alu_out_reg, mem_data_reg
@@ -169,8 +201,8 @@ Potential logic for registers:
     end
 
 #### High Level Pipeline:
-1. Instruction Fetch: Fetches instructions from memory.
-2. Instruction Decode: Decodes the instruction and fetches operands.
+1. Fetch: Fetches instructions from memory.
+2. Decode: Decodes the instruction and fetches operands.
 3. Execute: Performs ALU operations or calculates addresses.
 4. Memory: Reads from or writes to memory.
 5. Write Back: Writes results back to the register file.
@@ -243,20 +275,6 @@ For stores, no register writeback occurs:
 - Writeback MUX output is ignored
 - pc <= pc + 4 (move to next instruction)
 - pc_write = 1 (allows PC update)
-
-The writeback MUX selects 
-the appropriate value (alu_out, mem_data_reg, or PC+4) and reg_write_enable = 1 to 
-write the selected value into rd_data of the register file at register rd_addr.
-
-Writeback MUX (rd_sel)
-Selects what data gets written to rd_data input of register file:
-Inputs (controlled by 2-bit rd_sel signal):
-- 00: alu_out (for ALU operations like add, sub, and, or)
-- 01: mem_data_reg (for load instructions like lw, lh, lb)
-- 10: reg_imm (for immediate instructions like lui)
-- 11: PC+4 (for jump-and-link instructions like jal, jalr)
-
-Output: Goes to rd_data[31:0] input of register file
 
 
 
