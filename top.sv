@@ -104,7 +104,7 @@ module top (
     // Immediate Generator - extracts and sign-extends immediate values
     // Takes: ir
     // Outputs: imm_value
-    immed_gen imm_generator (
+    immed_gen immed_generator (
         .ir             (ir),
         .imm_value      (imm_value)
     );
@@ -148,7 +148,7 @@ module top (
         .dmem_wren          (dmem_wren),
         .alu_src_a          (alu_src_a),
         .alu_src_b          (alu_src_b),
-        .writeback_src      (writeback_src),
+        .writeback_mux      (writeback_src),
         .pc_src             (pc_src)
         // might be forgetting something
     );
