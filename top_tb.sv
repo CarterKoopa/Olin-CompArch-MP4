@@ -1,11 +1,10 @@
 `timescale 10ns/10ns
 `include "top.sv"
 
-module mp4_tb;
+module top_tb;
 
     logic clk = 0;
-    logic LED, RGB_R, RGB_G, RGB_B;
-
+    logic LED, RGB_R, RGB_G, RGB_B; 
 
     top u0 (
         .clk            (clk), 
@@ -16,8 +15,8 @@ module mp4_tb;
     );
 
     initial begin
-        $dumpfile("mp4.vcd");
-        $dumpvars(0, mp4_tb);
+        $dumpfile("top.vcd");
+        $dumpvars(0, top_tb);
         #100000
         $finish;
     end
