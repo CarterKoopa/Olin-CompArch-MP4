@@ -1,9 +1,10 @@
-`include "memory.sv"
+`include "memory/memory.sv"
 `include "instruction_decoder.sv"
 `include "immed_gen.sv"
 `include "reg_file.sv"
 `include "alu.sv"
 `include "control_unit.sv"
+import instruction_types::instruction_types;
 
 module top (
     input logic clk, 
