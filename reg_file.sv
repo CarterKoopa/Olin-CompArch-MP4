@@ -1,4 +1,4 @@
-module register_file #(
+module reg_file #(
 
 ) (
     input clk,
@@ -9,7 +9,7 @@ module register_file #(
     input logic reg_write_enable,
     output logic[31:0] rs1_data,
     output logic[31:0] rs2_data
-)
+);
 
     logic[31:0] regs[31:0];
 
