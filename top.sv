@@ -4,7 +4,7 @@
 `include "reg_file.sv"
 `include "alu.sv"
 `include "control_unit.sv"
-import instruction_types::instruction_types;
+//import instruction_types::*;
 
 module top (
     input logic clk, 

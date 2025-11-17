@@ -3,7 +3,7 @@
 // RISC-V Microprocessor Implementation
 //
 // Arithmetic Logic Unit
-import instruction_types::instruction_types;
+import instruction_types::*;
 
 module alu (
     parameter TEST;
@@ -12,10 +12,24 @@ module alu (
     input logic [2:0] funct3,
     input logic [31:0] input1_value,
     input logic [31:0] input2_value,
-    input instruction_types instruction_type,
+    input logic [6:0] op_code,
     output [31:0] alu_output_value
 );
 
+    typedef enum logic [6:0] {
+        R_TYPE    = 7'b0110011,
+        I_TYPE    = 7'b0010011,
+        LOAD_TYPE = 7'b0000011,
+        S_TYPE    = 7'b0100011,
+        B_TYPE    = 7'b1100011,
+        JAL       = 7'b1101111,
+        JALR      = 7'b1100111, 
+        LUI       = 7'b0110111,
+        AUIPI     = 7'b0010111
+    } instruction_type;
+
+    instruction_type current_instruction_type;
+    assign current_instruction_type = op_code;
     // This always_comb block computes outputs for all R and I type instructions
     // For these two instruction types, there is parity in the meaning of the
     // funct7 and funct3 codes. In the other instruction types, values of these
@@ -29,7 +43,7 @@ module alu (
         // carried out, with funct7 setting a variant of that operator for
         // some. As such, use a case statement with later if statements for
         // checking the funct3 and funct7 values, respectively.
-        case instruction_type
+        case current_instruction_type
             R_TYPE:
                 case funct3
                     3'h0:
