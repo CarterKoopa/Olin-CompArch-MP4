@@ -6,8 +6,6 @@
 import instruction_types::*;
 
 module alu (
-    parameter TEST;
-)(
     input logic [6:0] funct7,
     input logic [2:0] funct3,
     input logic [31:0] input1_value,
@@ -25,7 +23,7 @@ module alu (
         JAL       = 7'b1101111,
         JALR      = 7'b1100111, 
         LUI       = 7'b0110111,
-        AUIPI     = 7'b0010111
+        AUIPC     = 7'b0010111
     } instruction_type;
 
     instruction_type current_instruction_type;
@@ -43,9 +41,9 @@ module alu (
         // carried out, with funct7 setting a variant of that operator for
         // some. As such, use a case statement with later if statements for
         // checking the funct3 and funct7 values, respectively.
-        case current_instruction_type
+        case (current_instruction_type)
             R_TYPE:
-                case funct3
+                case (funct3)
                     3'h0:
                         if(funct7 == 7'h0) begin
                             alu_output_value = input1_value + input2_value;
@@ -76,15 +74,15 @@ module alu (
                         end
                     3'h2:
                         // Set less than
-                        alu_output_value = (input1_value < input2_value)
+                        alu_output_value = (input1_value < input2_value);
                     3'h3:
                         // Set less than unsigned
-                        alu_output_value = (input1_value < input2_value)
+                        alu_output_value = (input1_value < input2_value);
                     default:
                         alu_output_value = 0;
                 endcase
             I_TYPE:
-                case funct3
+                case (funct3)
                     3'h0:
                         // Addition
                         alu_output_value = input1_value + input2_value;
@@ -111,19 +109,19 @@ module alu (
                         end
                     3'h2:
                         // Set less than
-                        alu_output_value = (input1_value < input2_value)
+                        alu_output_value = (input1_value < input2_value);
                     3'h3:
                         // Set less than unsigned
-                        alu_output_value = (input1_value < input2_value)
+                        alu_output_value = (input1_value < input2_value);
                     default:
-                        alu_output_value = 0;
+                        alu_output_value = 32'b0;
                 endcase
             LOAD_TYPE, S_TYPE:
                 // All loading just adds the immediate to rs1; slicing depending
                 // on the load length happens externally.
                 alu_output_value = input1_value + input2_value;
             B_TYPE:
-                case funct3
+                case (funct3)
                     3'h0:
                         // Branch ==
                         alu_output_value = (input1_value == input2_value) ? 32'hFFFFFF : 32'h0;
@@ -142,6 +140,8 @@ module alu (
                     3'h7:
                         // Branch >= (Unsigned)
                         alu_output_value = (input1_value >= input2_value) ? 32'hFFFFFF : 32'h0;
+                    default:
+                        alu_output_value = 32'b0;
                 endcase
             JAL, JALR:
                 alu_output_value = input1_value + input2_value;
@@ -149,6 +149,8 @@ module alu (
                 alu_output_value = input1_value << 12;
             AUIPC:
                 alu_output_value = input1_value + (input2_value << 12);
+            default:
+                alu_output_value = 32'b0;
         endcase
     end
 
