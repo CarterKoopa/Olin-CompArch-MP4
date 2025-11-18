@@ -4,6 +4,7 @@
 `include "reg_file.sv"
 `include "alu.sv"
 `include "control_unit.sv"
+`include "pc_alu.sv"
 //import instruction_types::*;
 
 module top (
