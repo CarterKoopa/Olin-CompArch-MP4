@@ -16,10 +16,9 @@ module immed_gen (
     } instruction_type;
 
     instruction_type opcode;
-    assign opcode = ir[6:0];
+    assign opcode = instruction_type'(ir[6:0]);
 
     always_comb begin
-
         case (opcode) 
             R_TYPE:  imm_value = 32'b0;
             I_TYPE:  imm_value = {{20{ir[31]}}, ir[31:20]};
