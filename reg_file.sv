@@ -1,6 +1,4 @@
-module reg_file #(
-
-) (
+module reg_file (
     input clk,
     input logic[4:0] rs1_addr,
     input logic[4:0] rs2_addr,
