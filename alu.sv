@@ -26,6 +26,12 @@ module alu (
 
     instruction_type current_instruction_type;
     assign current_instruction_type = instruction_type'(op_code);
+
+    logic [6:0] i_type_shift_type;
+    assign i_type_shift_type = input2_value[11:5];
+
+    logic [4:0] i_type_shift_value;
+    assign i_type_shift_value = input2_value[4:0];
     // This always_comb block computes outputs for all R and I type instructions
     // For these two instruction types, there is parity in the meaning of the
     // funct7 and funct3 codes. In the other instruction types, values of these
@@ -97,13 +103,13 @@ module alu (
                         // Shift left logical
                         alu_output_value = input1_value << input2_value;
                     3'h5:
-                        if(input2_value[11:5] == 7'h0) begin
+                        if(i_type_shift_type == 7'h0) begin
                             // Shift right logical
-                            alu_output_value = input1_value >> input2_value[4:0];
+                            alu_output_value = input1_value >> i_type_shift_value;
                         end
                         else begin
                             // Shift right arithmetic 
-                            alu_output_value = input1_value >>> input2_value[4:0];
+                            alu_output_value = input1_value >>> i_type_shift_value;
                         end
                     3'h2:
                         // Set less than
