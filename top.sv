@@ -38,6 +38,7 @@ module top (
 
     // Wires between modules that connect module outputs to inputs within same clock cycle
     logic [31:0] next_pc; // eventually when we add next pc logic
+    logic [31:0] pc_alu_update; // PC+4 output from pc_alu
     logic [31:0] imm_value;
     logic [4:0] rs1_addr, rs2_addr, rd_addr;
     logic [31:0] rs1_data, rs2_data, rd_data; //rd_data for output from Writeback MUX
@@ -134,6 +135,13 @@ module top (
         .alu_output_value   (alu_result)
     );
 
+    // PC ALU - adds 4 to the PC
+    pc_alu pc_alu_unit (
+        .pc                 (pc),
+        .pc_alu_update      (pc_alu_update)
+    );
+
+
     // Control Unit - provides control signals to coordinate processor
     // Takes: clk, opcode, funct3, funct7
     // Outputs: ALL control signals
@@ -199,6 +207,7 @@ module top (
             2'b00: rd_data = alu_out_reg;     // For ALU operations (add, sub, and, or, etc.)
             2'b01: rd_data = mem_data_reg;    // For load instructions (lw, lh, lb)
             2'b10: rd_data = reg_imm;         // For lui (load upper immediate)
+            2'b11: rd_data = pc_alu_update;   // For jal/jalr (return address = PC+4)
             default: rd_data = 32'd0;
         endcase
     end
@@ -206,8 +215,8 @@ module top (
     // Program Counter Mux
     always_comb begin
         case (pc_src)
-            2'b00: next_pc = next_pc;     // For PC+4 calculation
-            2'b01: next_pc = dmem_address;    // For jump or branch calculation
+            1'b0: next_pc = pc_alu_update;    // For PC+4 calculation (normal sequential)
+            1'b1: next_pc = alu_out_reg;      // For jump or branch (target address from ALU)
             default: next_pc = 32'd0;
         endcase
     end
