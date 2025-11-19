@@ -150,7 +150,7 @@ module alu (
             JAL:
                 alu_output_value = input1_value + input2_value;
             JALR:
-                alu_output_value = (input1_value + input2_value) & 32'hFFFFFFF; // make even
+                alu_output_value = (input1_value + input2_value) & 32'hFFFFFFFF; // make even
             LUI:
                 alu_output_value = input1_value << 12; //code is bypassed by control unit for LUI
             AUIPC:
