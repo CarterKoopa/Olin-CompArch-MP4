@@ -3,6 +3,7 @@ module control_unit (
     input logic [6:0] opcode,
     input logic [2:0] funct3,
     input logic [6:0] funct7,
+    input logic [31:0] alu_out_reg,
     
     // Control signal outputs
     output logic pc_write,
@@ -25,6 +26,9 @@ module control_unit (
     } state_t;
     
     state_t current_state, next_state;
+
+    // Track if we're in the second execute cycle for branches
+    logic in_branch_execute2;
 
     // Instruction type decode (based on opcode)
     localparam [6:0] OP_R_TYPE    = 7'b0110011;  // R-type: add, sub, and, or, etc.
@@ -53,10 +57,19 @@ module control_unit (
     // State register - initialize to FETCH
     initial begin
         current_state = FETCH;
+        in_branch_execute2 = 1'b0;
     end
     
     always_ff @(posedge clk) begin
         current_state <= next_state;
+        
+        // Track if we're in the second execute cycle for branches
+        if (current_state == EXECUTE && is_branch && !in_branch_execute2) begin
+            in_branch_execute2 <= 1'b1;
+        end
+        else begin
+            in_branch_execute2 <= 1'b0;
+        end
     end
 
     // Next state logic
@@ -71,8 +84,11 @@ module control_unit (
             end
             
             EXECUTE: begin
+                // If branch and in first execute cycle, stay in EXECUTE for second cycle
+                if (is_branch && !in_branch_execute2)
+                    next_state = EXECUTE;
                 // If load or store, go to MEMORY stage
-                if (is_load || is_store)
+                else if (is_load || is_store)
                     next_state = MEMORY;
                 else
                     next_state = WRITEBACK;
@@ -135,10 +151,16 @@ module control_unit (
                     alu_src_b = 2'b10;  // reg_imm (offset)
                 end
                 else if (is_branch) begin
-                    // Branch: Calculate target = PC + immediate
-                    alu_src_a = 2'b00;  // PC
-                    alu_src_b = 2'b10;  // reg_imm (branch offset)
-                    // TODO: Need to evaluate branch condition (for now, not taken)
+                    if (!in_branch_execute2) begin
+                        // First execute cycle: Calculate target = PC + immediate
+                        alu_src_a = 2'b00;  // PC
+                        alu_src_b = 2'b10;  // reg_imm (branch offset)
+                    end
+                    else begin
+                        // Second execute cycle: Compare rs1 vs rs2 for branch condition
+                        alu_src_a = 2'b01;  // reg_a (rs1)
+                        alu_src_b = 2'b00;  // reg_b (rs2)
+                    end
                 end
                 else if (is_jal) begin
                     // JAL: Calculate target = PC + immediate
@@ -151,8 +173,7 @@ module control_unit (
                     alu_src_b = 2'b10;  // reg_imm (offset)
                 end
                 else if (is_lui) begin
-                    // LUI: update me
-                    alu_src_a = 2'b10; // immediate
+                    alu_src_a = 2'b00; // not used
                     alu_src_b = 2'b00; // not used
                 end
                 else if (is_auipc) begin
@@ -182,6 +203,10 @@ module control_unit (
                 // Select next PC value
                 if (is_jal || is_jalr) begin
                     pc_src = 1'b1;  // Jump to ALU result (target address)
+                end
+                else if (is_branch && (alu_out_reg != 32'd0)) begin
+                    // Branch taken if comparison result is non-zero
+                    pc_src = 1'b1;  // Use branch target from saved register
                 end
                 else begin
                     pc_src = 1'b0;  // PC+4 (sequential)

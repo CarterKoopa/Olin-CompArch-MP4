@@ -77,8 +77,8 @@ module alu (
                             alu_output_value = input1_value >>> input2_value;
                         end
                     3'h2:
-                        // Set less than
-                        alu_output_value = (input1_value < input2_value);
+                        // Set less than (SIGNED)
+                        alu_output_value = ($signed(input1_value) < $signed(input2_value));
                     3'h3:
                         // Set less than unsigned
                         alu_output_value = (input1_value < input2_value);
@@ -112,8 +112,8 @@ module alu (
                             alu_output_value = input1_value >>> i_type_shift_value;
                         end
                     3'h2:
-                        // Set less than
-                        alu_output_value = (input1_value < input2_value);
+                        // Set less than (SIGNED)
+                        alu_output_value = ($signed(input1_value) < $signed(input2_value));
                     3'h3:
                         // Set less than unsigned
                         alu_output_value = (input1_value < input2_value);
@@ -133,11 +133,11 @@ module alu (
                         // Branch !=
                         alu_output_value = (input1_value != input2_value) ? 32'hFFFFFF : 32'h0;
                     3'h4:
-                        // Branch <
-                        alu_output_value = (input1_value < input2_value) ? 32'hFFFFFF : 32'h0;
+                        // Branch < (SIGNED)
+                        alu_output_value = ($signed(input1_value) < $signed(input2_value)) ? 32'hFFFFFF : 32'h0;
                     3'h5:
-                        // Branch >=
-                        alu_output_value = (input1_value >= input2_value) ? 32'hFFFFFF : 32'h0;
+                        // Branch >= (SIGNED)
+                        alu_output_value = ($signed(input1_value) >= $signed(input2_value)) ? 32'hFFFFFF : 32'h0;
                     3'h6:
                         // Branch < (Unsigned)
                         alu_output_value = (input1_value < input2_value) ? 32'hFFFFFF : 32'h0;
@@ -147,12 +147,14 @@ module alu (
                     default:
                         alu_output_value = 32'b0;
                 endcase
-            JAL, JALR:
+            JAL:
                 alu_output_value = input1_value + input2_value;
+            JALR:
+                alu_output_value = (input1_value + input2_value) & 32'hFFFFFFF; // make even
             LUI:
-                alu_output_value = input1_value << 12;
+                alu_output_value = input1_value << 12; //code is bypassed by control unit for LUI
             AUIPC:
-                alu_output_value = input1_value + (input2_value << 12);
+                alu_output_value = input1_value + input2_value; //shift happens in immed_gen
             default:
                 alu_output_value = 32'b0;
         endcase

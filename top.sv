@@ -29,13 +29,14 @@ module top (
     logic blue;
 
     // State registers to hold persistent state across clock cycles
-    logic [31:0] pc;
+    logic [31:0] pc = 32'h00001000;  // Start at instruction memory base address
     logic [31:0] ir;  // instruction register
     logic [31:0] alu_out_reg;
     logic [31:0] mem_data_reg;
     logic [31:0] reg_a;
     logic [31:0] reg_b;
     logic [31:0] reg_imm;
+    logic [31:0] branch_target_reg;
 
     // Wires between modules that connect module outputs to inputs within same clock cycle
     logic [31:0] next_pc; // eventually when we add next pc logic
@@ -82,6 +83,12 @@ module top (
         
         // Execute: Save ALU result
         alu_out_reg <= alu_result;
+        
+        // For branches: Save target address from first execute cycle
+        // Check if this is a branch instruction (opcode 7'b1100011) and alu_src_a == 00 (PC)
+        if (opcode == 7'b1100011 && alu_src_a == 2'b00) begin
+            branch_target_reg <= alu_result;
+        end
         
         // Memory: Save memory read data
         mem_data_reg <= dmem_data_out;
@@ -133,7 +140,8 @@ module top (
         .input2_value       (alu_input_b),
         .funct3             (funct3),
         .funct7             (funct7),
-        .alu_output_value   (alu_result)
+        .alu_output_value   (alu_result),
+        .op_code            (opcode)
     );
 
     // PC ALU - adds 4 to the PC
@@ -144,13 +152,14 @@ module top (
 
 
     // Control Unit - provides control signals to coordinate processor
-    // Takes: clk, opcode, funct3, funct7
+    // Takes: clk, opcode, funct3, funct7, alu_out_reg
     // Outputs: ALL control signals
     control_unit controller (
         .clk                (clk),
         .opcode             (opcode),
         .funct3             (funct3),
         .funct7             (funct7),
+        .alu_out_reg        (alu_out_reg),
         .pc_write           (pc_write),
         .ir_write           (ir_write),
         .reg_write          (reg_write),
@@ -159,7 +168,6 @@ module top (
         .alu_src_b          (alu_src_b),
         .writeback_mux      (writeback_src),
         .pc_src             (pc_src)
-        // might be forgetting something
     );
 
     // memory - implements both instruction and data memory
@@ -217,7 +225,13 @@ module top (
     always_comb begin
         case (pc_src)
             1'b0: next_pc = pc_alu_update;    // For PC+4 calculation (normal sequential)
-            1'b1: next_pc = alu_out_reg;      // For jump or branch (target address from ALU)
+            1'b1: begin
+                // Check if this is a branch (use saved branch target) or jump (use ALU result)
+                if (opcode == 7'b1100011)  // Branch opcode
+                    next_pc = branch_target_reg;
+                else  // JAL/JALR
+                    next_pc = alu_out_reg;
+            end
             default: next_pc = 32'd0;
         endcase
     end

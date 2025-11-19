@@ -53,7 +53,7 @@ module immed_gen (
             I_TYPE:  imm_value = {{20{sign_bit}}, i_type_immed};
             S_TYPE:  imm_value = {{20{sign_bit}}, s_type_immed_1, s_type_immed_2};
             B_TYPE:  imm_value = {{20{sign_bit}}, b_type_immed_1, b_type_immed_2, b_type_immed_3, 1'b0};
-            LUI, AUIPC:  imm_value = {lui_immed, 12'b0};
+            LUI, AUIPC:  imm_value = {lui_immed, 12'b0}; //shift 12 zero bits on the right
             JAL:  imm_value = {{12{sign_bit}}, jal_immed_1, jal_immed_2, jal_immed_3, 1'b0};
             default: imm_value = 32'b0;
         endcase
