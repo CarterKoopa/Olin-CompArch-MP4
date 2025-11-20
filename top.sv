@@ -23,10 +23,12 @@ module top (
     logic [31:0] imem_data_out;
 
     logic reset;
+    /*
     logic led;
     logic red;
     logic green;
     logic blue;
+    */
 
     // State registers to hold persistent state across clock cycles
     logic [31:0] pc = 32'h00001000;  // Start at instruction memory base address
@@ -183,10 +185,10 @@ module top (
         .imem_data_out  (imem_data_out), 
         .dmem_data_out  (dmem_data_out), 
         .reset          (reset), 
-        .led            (led), 
-        .red            (red), 
-        .green          (green), 
-        .blue           (blue)
+        .led            (LED), 
+        .red            (RGB_R), 
+        .green          (RGB_G), 
+        .blue           (RGB_B)
     );
 
     // *Multiplexers*
