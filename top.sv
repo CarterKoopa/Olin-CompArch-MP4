@@ -174,7 +174,7 @@ module top (
 
     // memory - implements both instruction and data memory
     memory #(
-        .IMEM_INIT_FILE_PREFIX  ("rv32i_test")
+        .IMEM_INIT_FILE_PREFIX  ("rv32i_test_new")
     ) u1 (
         .clk            (clk), 
         .funct3         (funct3), 
@@ -232,7 +232,7 @@ module top (
                 if (opcode == 7'b1100011)  // Branch opcode
                     next_pc = branch_target_reg;
                 else  // JAL/JALR
-                    next_pc = alu_out_reg;
+                    next_pc = alu_out_reg + 3'd4;
             end
             default: next_pc = 32'd0;
         endcase
