@@ -27,12 +27,12 @@
     sb x17, -3(x0)          # pc = 0x68
     sb x17, -2(x0)          # pc = 0x6C
     sb x17, -1(x0)          # pc = 0x70
-    lw x18, -4(x0)          # pc = 0x70, x18 = 0xC0C0C0C0
-    lw x19, -12(x0)         # pc = 0x74, x19 = micros
-    lh x20, -4(x0)          # pc = 0x78, x20 = 0xFFFFC0C0
-    lhu x21, -4(x0)         # pc = 0x7C, x21 = 0x0000C0C0
-    lb x22, -4(x0)          # pc = 0x80, x22 = 0xFFFFFFC0
-    lbu x23, -4(x0)         # pc = 0x84, x23 = 0x000000C0
+    lw x18, -4(x0)          # pc = 0x74, x18 = 0xC0C0C0C0
+    lw x19, -12(x0)         # pc = 0x78, x19 = micros
+    lh x20, -4(x0)          # pc = 0x7C, x20 = 0xFFFFC0C0
+    lhu x21, -4(x0)         # pc = 0x80, x21 = 0x0000C0C0
+    lb x22, -4(x0)          # pc = 0x84, x22 = 0xFFFFFFC0
+    lbu x23, -4(x0)         # pc = 0x86, x23 = 0x000000C0
 
 
 

@@ -232,7 +232,7 @@ module top (
                 if (opcode == 7'b1100011)  // Branch opcode
                     next_pc = branch_target_reg;
                 else  // JAL/JALR
-                    next_pc = alu_out_reg + 3'd4;
+                    next_pc = alu_out_reg;
             end
             default: next_pc = 32'd0;
         endcase
