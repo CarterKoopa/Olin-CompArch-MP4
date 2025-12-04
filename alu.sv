@@ -12,6 +12,10 @@ module alu (
     output logic [31:0] alu_output_value
 );
 
+    // Define an enum for each of the instruction types of individual 
+    // instructions where the function of the ALU changes. The bit value 
+    // corresponding to each enum value is the same as the value of the op code
+    // specifying that instruction.
     typedef enum logic [6:0] {
         R_TYPE    = 7'b0110011,
         I_TYPE    = 7'b0010011,
@@ -27,19 +31,20 @@ module alu (
     instruction_type current_instruction_type;
     assign current_instruction_type = instruction_type'(op_code);
 
+    // For certain I-type instructions, a specific portion of the immediate
+    // value, rather than the funct7 code (given the immediate value takes the
+    // position that would otherwise be the funct7 code) determines the sub-type
+    // of operations for shift left & right instructions. Pull out this value
+    // for further evaluation.
     logic [6:0] i_type_shift_type;
     assign i_type_shift_type = input2_value[11:5];
 
     logic [4:0] i_type_shift_value;
     assign i_type_shift_value = input2_value[4:0];
-    // This always_comb block computes outputs for all R and I type instructions
-    // For these two instruction types, there is parity in the meaning of the
-    // funct7 and funct3 codes. In the other instruction types, values of these
-    // function codes begin to take on new meanings depending on the instruction
-    // type (defined by the op code). While this could later be implemented in
-    // this module rather easily, for right now, we're choosing the abstract
-    // away the instruction type from this module and do that processing
-    // elsewhere.
+
+    // This combinational block iterates based on the instruction type to
+    // determine the relevant meanings of each of the funct3 and funct7 codes
+    // which determine the actual mathematical operation.
     always_comb begin
         // funct3 is the main controller of what mathematical operator is
         // carried out, with funct7 setting a variant of that operator for
