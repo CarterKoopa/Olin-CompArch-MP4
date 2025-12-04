@@ -1,3 +1,11 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Control Module
+//
+// This module serves to implement the main finite state machine and implement
+// read/write protection for the various modules.
 module control_unit (
     input logic clk,
     input logic [6:0] opcode,
@@ -31,6 +39,9 @@ module control_unit (
     logic in_branch_execute2;
 
     // Instruction type decode (based on opcode)
+    //
+    // TODO: implement this to use the same enum structure as is in 
+    //
     localparam [6:0] OP_R_TYPE    = 7'b0110011;  // R-type: add, sub, and, or, etc.
     localparam [6:0] OP_I_TYPE    = 7'b0010011;  // I-type: addi, andi, ori, etc.
     localparam [6:0] OP_LOAD      = 7'b0000011;  // Load: lw, lh, lb

@@ -1,3 +1,12 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Program Counter
+//
+// This module implements a basic program counter register which is updated
+// based upon a flag from an external state machine.
+
 module program_counter #( 
 
 ) (

@@ -1,3 +1,11 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Instruction Decoder
+//
+// This module decodes the various components of an R-type instruction, many of
+// which are common to other instruction types.
 module instruction_decoder (
     input logic[31:0] instruction,
     output logic[6:0] opcode,

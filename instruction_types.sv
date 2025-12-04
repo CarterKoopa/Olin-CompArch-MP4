@@ -1,3 +1,7 @@
+// This package attempted to define a common enum for use across modules
+// so the raw op code did not need to be passed (for easier code visibility &
+// troubleshooting, given they take the same logic space). However, the current
+// Yosys/iverlog implementation does not support this functionality completely.
 package instruction_types
 
     typedef enum logic [6:0] {

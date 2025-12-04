@@ -1,8 +1,20 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Immediate Generator
+//
+// For the current instruction type, the immediate gen assembles the entirety
+// of the immediate value for further processing into the ALU (or elsewhere)
 module immed_gen (
     input logic [31:0] ir,
     output logic [31:0] imm_value
 );
 
+    // Define an enum for each of the instruction types of individual 
+    // instructions where the immediate value layout changes. The bit value 
+    // corresponding to each enum value is the same as the value of the op code
+    // specifying that instruction.
     typedef enum logic [6:0] {
         R_TYPE    = 7'b0110011,
         I_TYPE    = 7'b0010011,
@@ -18,6 +30,9 @@ module immed_gen (
     instruction_type opcode;
     assign opcode = instruction_type'(ir[6:0]);
 
+    // In this section, index and assign the various components of the immediate
+    // regardless of what the current instruction type is. Deal with assembling
+    // later.
     logic sign_bit;
     assign sign_bit = ir[31];
 
@@ -46,13 +61,21 @@ module immed_gen (
     assign jal_immed_2 = ir[20];
     assign jal_immed_3 = ir[30:21];
 
-
+    // Based on the current instruction type (ie, based on the op code) assign
+    // the immediate value based on the correct concatenation.
+    //
+    // How these immediates are assembled comes from the Harris & Harris
+    // textbook.
     always_comb begin
         case (opcode) 
             R_TYPE:  imm_value = 32'b0;
+            // For ann non-lui/auipc (upper immediate) instructions, the sign
+            // bit is extended to fill the first 20 bits of the 32 bit output.
             I_TYPE:  imm_value = {{20{sign_bit}}, i_type_immed};
             S_TYPE:  imm_value = {{20{sign_bit}}, s_type_immed_1, s_type_immed_2};
             B_TYPE:  imm_value = {{20{sign_bit}}, b_type_immed_1, b_type_immed_2, b_type_immed_3, 1'b0};
+            // lui and auipc instructions only fill the first 20 bits that are
+            // left sign-extended for the other immediate functions
             LUI, AUIPC:  imm_value = {lui_immed, 12'b0}; //shift 12 zero bits on the right
             JAL:  imm_value = {{12{sign_bit}}, jal_immed_1, jal_immed_2, jal_immed_3, 1'b0};
             default: imm_value = 32'b0;

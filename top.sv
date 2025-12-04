@@ -1,3 +1,14 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Top-Level Module
+//
+// This module instantiate and orchestrates all modules needed to implement
+// a RISC-V 32i instruction set microprocessor. Additionally, this module
+// connects the memory-mapped peripherals in the memory module to the physical
+// hardware of the iceBlinkPico FPGA board.
+
 `include "memory/memory.sv"
 `include "instruction_decoder.sv"
 `include "immed_gen.sv"

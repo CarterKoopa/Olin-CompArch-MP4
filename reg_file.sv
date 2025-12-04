@@ -1,3 +1,12 @@
+//
+// Olin Computer Architecture - Mini-Project 4
+// RISC-V Microprocessor Implementation
+//
+// Register File
+//
+// This module implements the 32, 32-bit registers available, in addition to
+// enabling reading and writing to these registers.
+
 module reg_file (
     input clk,
     input logic[4:0] rs1_addr,
