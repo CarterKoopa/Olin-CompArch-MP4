@@ -14,7 +14,7 @@
 `include "immed_gen.sv"
 `include "reg_file.sv"
 `include "alu.sv"
-`include "control_unit.sv"
+`include "control_unit_2.sv"
 `include "pc_alu.sv"
 //import instruction_types::*;
 
