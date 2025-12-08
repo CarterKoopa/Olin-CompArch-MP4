@@ -82,38 +82,30 @@ module top (
     // *Sequential Logic - State Registers*
     always_ff @(posedge clk) begin
         // Update PC when control unit signals
-        if (pc_write) begin
+        if (pc_write)
             pc <= next_pc;
-        end
-    end
-    
-    always_ff @(posedge clk) begin
+        
         // Fetch: Load instruction into instruction register
-        if (ir_write) begin
+        if (ir_write)
             ir <= imem_data_out;
-        end
-    end
-
-    always_ff @(posedge clk) begin
+        
+        // Decode: Save register values and immediate
+        reg_a <= rs1_data;
+        reg_b <= rs2_data;
+        reg_imm <= imm_value;
+        
+        // Execute: Save ALU result
+        alu_out_reg <= alu_result;
+        
         // For branches: Save target address from first execute cycle
         // Check if this is a branch instruction (opcode 7'b1100011) and alu_src_a == 00 (PC)
         if (opcode == 7'b1100011 && alu_src_a == 2'b00) begin
             branch_target_reg <= alu_result;
-        end 
+        end
+        
+        // Memory: Save memory read data
+        mem_data_reg <= dmem_data_out;
     end
-
-    // Memory: Save memory read data
-    assign mem_data_reg = dmem_data_out;
-
-    // Execute: Save ALU result
-    assign alu_out_reg = alu_result;
-
-    // Decode: Save register values and immediate
-    assign reg_a = rs1_data;
-    assign reg_b = rs2_data;
-    assign reg_imm = imm_value;
-
-
 
     // *Module Instantiations*
 
