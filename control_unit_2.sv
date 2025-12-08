@@ -59,7 +59,7 @@ module control_unit (
     } instruction_type;
 
     instruction_type current_i_type;
-    assign current_i_type = opcode;
+    assign current_i_type = instruction_type'(opcode);
     
     always_ff @(posedge clk) begin  
         // Track if we're in the second execute cycle for branches
@@ -93,6 +93,7 @@ module control_unit (
                         else begin
                             next_state = EXECUTE;
                         end
+                    end
                     LOAD_TYPE: begin
                         next_state = MEMORY;
                     end
@@ -101,7 +102,6 @@ module control_unit (
                     end
                     default: begin
                         next_state = WRITEBACK;
-                    end
                     end
                 endcase
             end
