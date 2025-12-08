@@ -185,7 +185,7 @@ module top (
 
     // memory - implements both instruction and data memory
     memory #(
-        .IMEM_INIT_FILE_PREFIX  ("rv32i_test_new")
+        .IMEM_INIT_FILE_PREFIX  ("led_test")
     ) u1 (
         .clk            (clk), 
         .funct3         (funct3), 

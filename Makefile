@@ -1,5 +1,5 @@
 filename = top
-pcf_file = common/iceBlinkPico.pcf
+pcf_file = ../../common/iceBlinkPico.pcf
 
 build:
 	yosys -p "synth_ice40 -top top -json $(filename).json" $(filename).sv
@@ -11,3 +11,8 @@ prog: #for sram
 
 clean:
 	rm -rf $(filename).blif $(filename).asc $(filename).json $(filename).bin
+
+sim:
+	iverilog -g2012 -o $(filename) $(filename)_tb.sv
+	vvp $(filename)
+	GTK_PATH= gtkwave $(filename).vcd

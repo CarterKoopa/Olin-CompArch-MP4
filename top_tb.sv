@@ -17,7 +17,7 @@ module top_tb;
     initial begin
         $dumpfile("top.vcd");
         $dumpvars(0, top_tb);
-        #100000
+        #10000000
         $finish;
     end
 
