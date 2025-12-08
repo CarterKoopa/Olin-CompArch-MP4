@@ -196,10 +196,10 @@ module top (
         .imem_data_out  (imem_data_out), 
         .dmem_data_out  (dmem_data_out), 
         .reset          (reset), 
-        .led            (LED), 
-        .red            (RGB_R), 
-        .green          (RGB_G), 
-        .blue           (RGB_B)
+        .led            (~LED), 
+        .red            (~RGB_R), 
+        .green          (~RGB_G), 
+        .blue           (~RGB_B)
     );
 
     // *Multiplexers*
