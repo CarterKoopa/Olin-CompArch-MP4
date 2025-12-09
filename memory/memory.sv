@@ -47,7 +47,7 @@ module memory #(
     localparam TICKS_PER_MICROSECOND = CLK_FREQ / 1000000;
 
     // Declare variables associated with memory-mapped peripherals
-    logic [31:0] leds = 32'd0;              // Address 0xFFFFFFFC, R/W, four 8-bit PWM duty-cycle values for the user LED and the RGB LEDs
+    logic [31:0] leds = 32'h00000000;        // Address 0xFFFFFFFC, R/W, four 8-bit PWM duty-cycle values for the user LED and the RGB LEDs
     logic [31:0] millis = 32'd0;            // Address 0xFFFFFFF8, R, count of milliseconds since processor started (mod 2^32)
     logic [31:0] micros = 32'd0;            // Address 0xFFFFFFF4, R, count of microseconds since processor started (mod 2^32)
 
