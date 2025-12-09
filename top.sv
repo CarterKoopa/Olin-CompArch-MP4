@@ -183,6 +183,10 @@ module top (
         .pc_src             (pc_src)
     );
 
+    logic led;
+    logic red;
+    logic green;
+    logic blue;
     // memory - implements both instruction and data memory
     memory #(
         .IMEM_INIT_FILE_PREFIX  ("led_test")
@@ -196,11 +200,16 @@ module top (
         .imem_data_out  (imem_data_out), 
         .dmem_data_out  (dmem_data_out), 
         .reset          (reset), 
-        .led            (~LED), 
-        .red            (~RGB_R), 
-        .green          (~RGB_G), 
-        .blue           (~RGB_B)
+        .led            (led), 
+        .red            (red), 
+        .green          (green), 
+        .blue           (blue)
     );
+
+    assign LED = ~led;
+    assign RGB_R = ~red;
+    assign RGB_G = ~green;
+    assign RGB_B = ~blue;
 
     // *Multiplexers*
     
