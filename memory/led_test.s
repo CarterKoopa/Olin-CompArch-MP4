@@ -1,4 +1,3 @@
-# LED byte test: clear all, then turn each LED on one-by-one with delay
 # Negative offsets from x0:
 #   -4(x0) -> 0xFFFFFFFC -> BLUE
 #   -3(x0) -> 0xFFFFFFFD -> GREEN
