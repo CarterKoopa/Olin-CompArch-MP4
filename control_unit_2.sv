@@ -60,6 +60,7 @@ module control_unit (
 
     instruction_type current_i_type;
     assign current_i_type = instruction_type'(opcode);
+    // assign current_i_type = (opcode);
     
     always_ff @(posedge clk) begin  
         // Track if we're in the second execute cycle for branches

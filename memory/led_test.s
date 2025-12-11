@@ -16,4 +16,3 @@ addi x2, x0, 255     # x2 = 0xFF
 
 # --- Blue on ---
 sb   x2, -4(x0)      # BLUE  <- 0xFF
-

@@ -250,7 +250,7 @@ module top (
             1'b1: begin
                 // Check if this is a branch (use saved branch target) or jump (use ALU result)
                 if (opcode == 7'b1100011)  // Branch opcode
-                    next_pc = branch_target_reg;
+                    next_pc = alu_out_reg == 32'hFFFFFF ? pc + reg_imm : pc_alu_update;
                 else  // JAL/JALR
                     next_pc = alu_out_reg;
             end
