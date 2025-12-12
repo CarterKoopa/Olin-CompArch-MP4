@@ -134,22 +134,22 @@ module alu (
                 case (funct3)
                     3'h0:
                         // Branch ==
-                        alu_output_value = (input1_value == input2_value) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = (input1_value == input2_value) ? 32'hFFFFFFFF : 32'h0;
                     3'h1:
                         // Branch !=
-                        alu_output_value = (input1_value != input2_value) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = (input1_value != input2_value) ? 32'hFFFFFFFF : 32'h0;
                     3'h4:
                         // Branch < (SIGNED)
-                        alu_output_value = ($signed(input1_value) < $signed(input2_value)) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = ($signed(input1_value) < $signed(input2_value)) ? 32'hFFFFFFFF : 32'h0;
                     3'h5:
                         // Branch >= (SIGNED)
-                        alu_output_value = ($signed(input1_value) >= $signed(input2_value)) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = ($signed(input1_value) >= $signed(input2_value)) ? 32'hFFFFFFFF : 32'h0;
                     3'h6:
                         // Branch < (Unsigned)
-                        alu_output_value = (input1_value < input2_value) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = (input1_value < input2_value) ? 32'hFFFFFFFF : 32'h0;
                     3'h7:
                         // Branch >= (Unsigned)
-                        alu_output_value = (input1_value >= input2_value) ? 32'hFFFFFF : 32'h0;
+                        alu_output_value = (input1_value >= input2_value) ? 32'hFFFFFFFF : 32'h0;
                     default:
                         alu_output_value = 32'b0;
                 endcase

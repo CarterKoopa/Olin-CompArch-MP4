@@ -239,14 +239,8 @@ module control_unit (
                         reg_write = 1'b1;
                     end
                     B_TYPE: begin
-                        if(alu_out_reg != 32'd0) begin
-                            pc_src = 1'b1;
-                            pc_write = 1'b1;
-                        end
-                        else begin
-                            pc_src = 1'b0;
-                            pc_write = 1'b1;
-                        end
+                        pc_src = 1'b1;
+                        pc_write = 1'b1;
                     end
                     LOAD_TYPE: begin
                         pc_write = 1'b1;
