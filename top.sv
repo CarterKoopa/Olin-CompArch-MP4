@@ -193,7 +193,7 @@ module top (
     logic blue;
     // memory - implements both instruction and data memory
     memory #(
-        .IMEM_INIT_FILE_PREFIX  ("led_test")
+        .IMEM_INIT_FILE_PREFIX  ("led_blink_counter")
     ) u1 (
         .clk            (clk), 
         .funct3         (funct3), 

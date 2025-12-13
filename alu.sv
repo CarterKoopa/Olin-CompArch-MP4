@@ -29,8 +29,8 @@ module alu (
     } instruction_type;
 
     instruction_type current_instruction_type;
-    assign current_instruction_type = instruction_type'(op_code);
-    // assign current_instruction_type = (op_code);
+    // assign current_instruction_type = instruction_type'(op_code);
+    assign current_instruction_type = (op_code);
 
     // For certain I-type instructions, a specific portion of the immediate
     // value, rather than the funct7 code (given the immediate value takes the

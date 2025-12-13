@@ -9,7 +9,7 @@ sb    x3, -1(x0)         # LED user
 addi  x3, x0, 255        # x3 = 255 (100% PWM LED on)
 sb    x3, -1(x0)         # write brightness to user LED
 addi  x2, x0, 1          # x2 = 1 (state = LED ON)
-
+    
 # Compute next toggle time: next = millis + 500
 lw   x5, -8(x0)         # x5 = millis
 addi  x9, x5, 500        # x9 = target time miilis + 500
