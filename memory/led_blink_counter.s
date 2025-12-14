@@ -1,7 +1,7 @@
 # Initialize x1 to 1 for inner loop comparison
 addi  x1, x0, 1          # x1 = 1
 
-# Turn off all LEDs (blue, green, red, user LED)
+# Turn off all LEDs (blue, green, red, user LED) for initiation
 addi  x3, x0, 0
 sb    x3, -4(x0)
 sb    x3, -3(x0)
@@ -9,7 +9,10 @@ sb    x3, -2(x0)
 sb    x3, -1(x0)
 
 # Main loop start
-# Turn LED ON
+# Turn user LED ON, RGB OFF
+sb    x3, -4(x0)
+sb    x3, -3(x0)
+sb    x3, -2(x0)
 addi x3, x0, 255
 sb   x3, -1(x0)
 
@@ -24,7 +27,11 @@ bne   x5, x1, -2
 addi  x4, x4, -1
 bne   x4, x1, -16
 
-# Turn LED OFF
+# Turn user LED OFF, RGB ON
+sb    x3, -4(x0)
+sb    x3, -3(x0)
+sb    x3, -2(x0)
+sb    x3, -1(x0)
 addi x3, x0, 0
 sb   x3, -1(x0)
 
@@ -39,4 +46,4 @@ addi  x4, x4, -1
 bne   x4, x1, -16
 
 # Jump back to main loop start
-jal  x0, -104
+jal  x0, -92
