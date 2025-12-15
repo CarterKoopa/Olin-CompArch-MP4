@@ -14,7 +14,7 @@
 `include "immed_gen.sv"
 `include "reg_file.sv"
 `include "alu.sv"
-`include "control_unit.sv"
+`include "control_unit_2.sv"
 `include "pc_alu.sv"
 //import instruction_types::*;
 
@@ -43,20 +43,21 @@ module top (
 
     // State registers to hold persistent state across clock cycles
     logic [31:0] pc = 32'h00001000;  // Start at instruction memory base address
+    // Initialize these to 0 to avoid X propagation at simulation start
     logic [31:0] ir;  // instruction register
-    logic [31:0] alu_out_reg;
-    logic [31:0] mem_data_reg;
-    logic [31:0] reg_a;
-    logic [31:0] reg_b;
-    logic [31:0] reg_imm;
-    logic [31:0] branch_target_reg;
+    logic [31:0] alu_out_reg = 32'd0;
+    logic [31:0] mem_data_reg = 32'd0;
+    logic [31:0] reg_a = 32'd0;
+    logic [31:0] reg_b = 32'd0;
+    logic [31:0] reg_imm = 32'd0;
+    logic [31:0] branch_target_reg = 32'd0;
 
     // Wires between modules that connect module outputs to inputs within same clock cycle
     logic [31:0] next_pc; // eventually when we add next pc logic
     logic [31:0] pc_alu_update; // PC+4 output from pc_alu
     logic [31:0] imm_value;
     logic [4:0] rs1_addr, rs2_addr, rd_addr;
-    logic [31:0] rs1_data, rs2_data, rd_data; //rd_data for output from Writeback MUX
+    logic [31:0] rs1_data, rs2_data, rd_data = 32'd0; // rd_data for output from Writeback MUX
     logic [31:0] alu_input_a, alu_input_b, alu_result;
     logic [6:0] opcode;
     logic [2:0] funct3;
@@ -78,6 +79,10 @@ module top (
     // Connect reg_b (rs2 value) to data memory input for stores
     assign dmem_data_in = reg_b;
 
+    assign ir = imem_data_out;
+    //assign reg_a = rs1_data;
+    //assign reg_b = r
+
 
     // *Sequential Logic - State Registers*
     always_ff @(posedge clk) begin
@@ -86,8 +91,7 @@ module top (
             pc <= next_pc;
         
         // Fetch: Load instruction into instruction register
-        if (ir_write)
-            ir <= imem_data_out;
+        // if (ir_write)
         
         // Decode: Save register values and immediate
         reg_a <= rs1_data;
@@ -183,9 +187,13 @@ module top (
         .pc_src             (pc_src)
     );
 
+    logic led;
+    logic red;
+    logic green;
+    logic blue;
     // memory - implements both instruction and data memory
     memory #(
-        .IMEM_INIT_FILE_PREFIX  ("rv32i_test_new")
+        .IMEM_INIT_FILE_PREFIX  ("led_blink_counter")
     ) u1 (
         .clk            (clk), 
         .funct3         (funct3), 
@@ -196,11 +204,16 @@ module top (
         .imem_data_out  (imem_data_out), 
         .dmem_data_out  (dmem_data_out), 
         .reset          (reset), 
-        .led            (LED), 
-        .red            (RGB_R), 
-        .green          (RGB_G), 
-        .blue           (RGB_B)
+        .led            (led), 
+        .red            (red), 
+        .green          (green), 
+        .blue           (blue)
     );
+
+    assign LED = ~led;
+    assign RGB_R = ~red;
+    assign RGB_G = ~green;
+    assign RGB_B = ~blue;
 
     // *Multiplexers*
     
@@ -241,7 +254,7 @@ module top (
             1'b1: begin
                 // Check if this is a branch (use saved branch target) or jump (use ALU result)
                 if (opcode == 7'b1100011)  // Branch opcode
-                    next_pc = branch_target_reg;
+                    next_pc = alu_out_reg == 32'hFFFFFFFF ? pc + $signed(reg_imm) : pc_alu_update;
                 else  // JAL/JALR
                     next_pc = alu_out_reg;
             end

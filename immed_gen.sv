@@ -28,12 +28,14 @@ module immed_gen (
     } instruction_type;
 
     instruction_type opcode;
-    assign opcode = instruction_type'(ir[6:0]);
+    // assign opcode = instruction_type'(ir[6:0]);
+    assign opcode = (ir[6:0]);
 
     // In this section, index and assign the various components of the immediate
     // regardless of what the current instruction type is. Deal with assembling
     // later.
     logic sign_bit;
+
     assign sign_bit = ir[31];
 
     logic [11:0] i_type_immed;
