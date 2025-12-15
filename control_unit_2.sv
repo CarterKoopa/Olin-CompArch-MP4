@@ -43,9 +43,6 @@ module control_unit (
     logic in_branch_execute2 = 1'b0;
 
     // Instruction type decode (based on opcode)
-    //
-    // TODO: implement this to use the same enum structure as is in 
-    //
     typedef enum logic [6:0] {
         R_TYPE    = 7'b0110011,
         I_TYPE    = 7'b0010011,
@@ -59,6 +56,8 @@ module control_unit (
     } instruction_type;
 
     instruction_type current_i_type;
+    // Simulation requires explicit casting but some version of yosys
+    // won't compile with explicit casting
     // assign current_i_type = instruction_type'(opcode);
     assign current_i_type = (opcode);
     

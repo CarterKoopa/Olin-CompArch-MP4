@@ -35,6 +35,8 @@ module reg_file (
     assign rs1_data = (rs1_addr != 5'd0) ? regs[rs1_addr] : 32'd0;
     assign rs2_data = (rs2_addr != 5'd0) ? regs[rs2_addr] : 32'd0;
 
+
+    //First 11 registers declared so they can be analyzed in simulation
     logic[31:0] reg0;
     assign reg0 = regs[0];
 
@@ -67,22 +69,6 @@ module reg_file (
 
     logic[31:0] reg10;
     assign reg10 = regs[10];
-
-
-
-    // always_ff @(posedge clk) begin
-    //     reg0 = regs[0];
-    //     reg1 = regs[1];
-    //     reg2 = regs[2];
-    //     reg3 = regs[3];
-    //     reg4 = regs[4];
-    //     reg5 = regs[5];
-    //     reg6 = regs[6];
-    //     reg7 = regs[7];   
-    //     reg8 = regs[8];
-    //     reg9 = regs[9];
-    //     reg10 = regs[10];
-    // end
 endmodule
 
 

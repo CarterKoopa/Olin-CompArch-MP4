@@ -28,6 +28,8 @@ module immed_gen (
     } instruction_type;
 
     instruction_type opcode;
+    // Simulation requires explicit casting but some version of yosys
+    // won't compile with explicit casting
     // assign opcode = instruction_type'(ir[6:0]);
     assign opcode = (ir[6:0]);
 
@@ -83,9 +85,5 @@ module immed_gen (
             default: imm_value = 32'b0;
         endcase
 
-    end
-
-
-
-    
+    end  
 endmodule

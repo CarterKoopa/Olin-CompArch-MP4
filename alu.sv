@@ -29,6 +29,9 @@ module alu (
     } instruction_type;
 
     instruction_type current_instruction_type;
+
+    // Simulation requires explicit casting but some version of yosys
+    // won't compile with explicit casting
     // assign current_instruction_type = instruction_type'(op_code);
     assign current_instruction_type = (op_code);
 
